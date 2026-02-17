@@ -1,0 +1,36 @@
+name: Update RPM Repository
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'x86_64/**'
+      - 'noarch/**'
+  workflow_dispatch: # Bu sayede botu siteden manuel de çalıştırabileceğiz
+
+jobs:
+  rebuild-repo:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Dosya yükleme yetkisi!
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install createrepo_c
+        run: sudo apt-get update && sudo apt-get install -y createrepo-c
+
+      - name: Rebuild Metadata
+        run: |
+          createrepo_c x86_64/
+          createrepo_c noarch/
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add .
+          git commit -m "Otomatik Güncelleme: Repo metadata oluşturuldu" || echo "Değişiklik yok"
+          git push
