@@ -5,28 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ro-repo | Fedora Paket Deposu</title>
     <style>
+        /* Temel Karanlık Tema Ayarları */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            background-color: #f4f6f8;
-            color: #333;
+            background-color: #121212; /* Çok Koyu Arka Plan */
+            color: #e0e0e0; /* Açık Gri Metin */
             max-width: 800px;
             margin: 0 auto;
             padding: 2rem;
         }
         .container {
-            background: #ffffff;
+            background: #1e1e1e; /* Koyu Gri Kart Arka Planı */
             padding: 2.5rem;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         h1 {
-            color: #294172; /* Fedora Mavisi */
-            border-bottom: 2px solid #e1e4e8;
+            color: #4da3ff; /* Daha Açık Fedora Mavisi */
+            border-bottom: 2px solid #333;
             padding-bottom: 0.5rem;
         }
         h2 {
-            color: #294172;
+            color: #4da3ff;
             margin-top: 2rem;
         }
         p {
@@ -35,16 +36,17 @@
         
         /* Satır içi ufak kod vurguları */
         code {
-            background: #e9ecef;
+            background: #2d2d2d;
             padding: 0.2rem 0.4rem;
             border-radius: 4px;
             font-family: "Courier New", Courier, monospace;
             font-size: 0.95em;
-            color: #d63384; /* Satır içi kodları biraz renklendirdim */
+            color: #ff80ab; /* Satır içi kodlar için pembe tonu */
         }
         
-        /* Büyük karanlık kod blokları */
-        pre {
+        /* Büyük karanlık kod blokları için sarmalayıcı */
+        .code-block-wrapper {
+            position: relative; /* Kopyalama butonu için */
             background: #1e1e1e;
             color: #d4d4d4;
             padding: 1.2rem;
@@ -52,18 +54,47 @@
             overflow-x: auto;
             font-family: "Courier New", Courier, monospace;
             line-height: 1.4;
+            margin-bottom: 1rem;
         }
-        
-        /* ÇAKIŞMAYI DÜZELTEN KISIM: Karanlık kutu içindeki kodları şeffaf yap */
+
+        /* Kod bloğunun kendisi */
+        pre {
+            margin: 0;
+            white-space: pre-wrap; /* Kopyalamada satır sonlarını korumak için */
+            word-wrap: break-word; /* Kopyalamada satır sonlarını korumak için */
+        }
+
         pre code {
             background: transparent;
             padding: 0;
             color: inherit;
         }
         
+        /* Kopyalama Butonu Stilleri */
+        .copy-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .copy-button:hover {
+            opacity: 1;
+            background-color: #4da3ff; /* Hover'da Fedora Mavisi */
+        }
+
+        /* Bilgi Kutusu Stilleri */
         .header-info {
-            background-color: #e6f2ff;
-            border-left: 4px solid #294172;
+            background-color: #1e2d4d; /* Daha koyu mavi bilgi kutusu */
+            border-left: 4px solid #4da3ff;
             padding: 1rem;
             border-radius: 0 8px 8px 0;
             margin-bottom: 2rem;
@@ -72,7 +103,7 @@
             margin-top: 3rem;
             text-align: center;
             font-size: 0.9rem;
-            color: #666;
+            color: #888;
         }
     </style>
 </head>
@@ -86,8 +117,10 @@
         </div>
 
         <h2>1. Depoyu Sisteme Eklemek</h2>
-        <p>Aşağıdaki komutu kopyalayarak terminalinize yapıştırın. Bu komut, hem 64-bit (x86_64) hem de mimariden bağımsız (noarch) paketler için gerekli depo yapılandırmasını sisteminize ekleyecektir:</p>
+        <p>Aşağıdaki komutu kopyalayarak terminalinize yapıştırın. Bu komut, hem 64-bit (<code>x86_64</code>) hem de mimariden bağımsız (<code>noarch</code>) paketler için gerekli depo yapılandırmasını sisteminize ekleyecektir:</p>
         
+        <div class="code-block-wrapper">
+            <button class="copy-button" onclick="copyCode(this)">Kopyala</button>
 <pre><code>sudo tee /etc/yum.repos.d/ro-repo.repo &lt;&lt;'EOF'
 [ro-repo]
 name=Acik Kaynak Gelistirme Toplulugu Repo
@@ -101,23 +134,67 @@ baseurl=https://acik-kaynak-gelistirme-toplulugu.github.io/ro-repo/noarch/
 enabled=1
 gpgcheck=0
 EOF</code></pre>
+        </div>
 
         <h2>2. Önbelleği Güncellemek</h2>
         <p>Depoyu ekledikten sonra, sisteminizin yeni paketleri algılayabilmesi için DNF önbelleğini temizleyin ve güncelleyin:</p>
+        
+        <div class="code-block-wrapper">
+            <button class="copy-button" onclick="copyCode(this)">Kopyala</button>
 <pre><code>sudo dnf clean all
 sudo dnf makecache</code></pre>
+        </div>
 
         <h2>3. Paket Kurulumu</h2>
         <p>Artık depomuzdaki paketleri kurmaya hazırsınız! Repodaki mevcut paketleri listelemek için aşağıdaki komutu kullanabilirsiniz:</p>
+        
+        <div class="code-block-wrapper">
+            <button class="copy-button" onclick="copyCode(this)">Kopyala</button>
 <pre><code>dnf repo-pkgs ro-repo list</code></pre>
+        </div>
         
         <p>Bir paketi kurmak için standart DNF komutunu kullanın (örneğin <code>ro-control</code> paketi için):</p>
+        
+        <div class="code-block-wrapper">
+            <button class="copy-button" onclick="copyCode(this)">Kopyala</button>
 <pre><code>sudo dnf install ro-control</code></pre>
+        </div>
 
         <footer>
             MADE BY SURHAYKOC &bull; Açık Kaynak Geliştirme Topluluğu
         </footer>
     </div>
+
+    <script>
+        function copyCode(button) {
+            const pre = button.nextElementSibling;
+            const code = pre.querySelector('code');
+            const range = document.createRange();
+            range.selectNode(code);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            
+            try {
+                document.execCommand('copy');
+                button.textContent = 'Kopyalandı!';
+                button.style.backgroundColor = '#4da3ff'; // Kopyalandığında mavi yap
+                button.style.color = '#fff';
+            } catch (err) {
+                console.error('Kopyalama başarısız:', err);
+                button.textContent = 'Hata!';
+                button.style.backgroundColor = '#ff4444'; // Hata durumunda kırmızı yap
+                button.style.color = '#fff';
+            }
+            
+            window.getSelection().removeAllRanges();
+            
+            setTimeout(() => {
+                button.textContent = 'Kopyala';
+                button.style.backgroundColor = ''; // Varsayılan renge dön
+                button.style.color = '';
+            }, 2000);
+        }
+    </script>
 
 </body>
 </html>
