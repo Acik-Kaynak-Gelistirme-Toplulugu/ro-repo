@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ro-repo | Fedora Paket Deposu</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f6f8;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .container {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: #294172; /* Fedora Mavisi */
+            border-bottom: 2px solid #e1e4e8;
+            padding-bottom: 0.5rem;
+        }
+        h2 {
+            color: #294172;
+            margin-top: 2rem;
+        }
+        p {
+            font-size: 1.05rem;
+        }
+        code {
+            background: #e9ecef;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.2rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: "Courier New", Courier, monospace;
+            line-height: 1.4;
+        }
+        .header-info {
+            background-color: #e6f2ff;
+            border-left: 4px solid #294172;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 2rem;
+        }
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>ro-repo Fedora Paket Deposu</h1>
+        
+        <div class="header-info">
+            <p><strong>Açık Kaynak Geliştirme Topluluğu</strong> tarafından sunulan resmi Fedora RPM paket deposuna hoş geldiniz. Bu rehber, repoyu sisteminize nasıl ekleyeceğinizi ve paketleri nasıl kuracağınızı açıklamaktadır.</p>
+        </div>
+
+        <h2>1. Depoyu Sisteme Eklemek</h2>
+        <p>Aşağıdaki komutu kopyalayarak terminalinize yapıştırın. Bu komut, hem 64-bit (x86_64) hem de mimariden bağımsız (noarch) paketler için gerekli depo yapılandırmasını sisteminize ekleyecektir:</p>
+        
+<pre><code>sudo tee /etc/yum.repos.d/ro-repo.repo &lt;&lt;'EOF'
+[ro-repo]
+name=Acik Kaynak Gelistirme Toplulugu Repo
+baseurl=https://acik-kaynak-gelistirme-toplulugu.github.io/ro-repo/$basearch/
+enabled=1
+gpgcheck=0
+
+[ro-repo-noarch]
+name=Acik Kaynak Gelistirme Toplulugu Repo - Noarch
+baseurl=https://acik-kaynak-gelistirme-toplulugu.github.io/ro-repo/noarch/
+enabled=1
+gpgcheck=0
+EOF</code></pre>
+
+        <h2>2. Önbelleği Güncellemek</h2>
+        <p>Depoyu ekledikten sonra, sisteminizin yeni paketleri algılayabilmesi için DNF önbelleğini temizleyin ve güncelleyin:</p>
+<pre><code>sudo dnf clean all
+sudo dnf makecache</code></pre>
+
+        <h2>3. Paket Kurulumu</h2>
+        <p>Artık depomuzdaki paketleri kurmaya hazırsınız! Repodaki mevcut paketleri listelemek için aşağıdaki komutu kullanabilirsiniz:</p>
+<pre><code>dnf repo-pkgs ro-repo list</code></pre>
+        
+        <p>Bir paketi kurmak için standart DNF komutunu kullanın (örneğin ro-control paketi için):</p>
+<pre><code>sudo dnf install ro-control</code></pre>
+
+        <footer>
+            MADE BY SURHAYKOC &bull; Açık Kaynak Geliştirme Topluluğu
+        </footer>
+    </div>
+
+</body>
+</html>
