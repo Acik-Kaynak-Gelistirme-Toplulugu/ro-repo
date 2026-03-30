@@ -2,6 +2,8 @@ name: Update RPM Repository from Releases
 
 on:
   workflow_dispatch: # Botu Actions sekmesinden manuel çalıştırmak için
+  schedule:
+    - cron: '0 0 * * *' # Her gece Gece Yarısı (00:00 UTC) çalışır
 
 jobs:
   rebuild-repo:
