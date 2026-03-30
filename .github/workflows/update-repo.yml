@@ -1,4 +1,4 @@
-name: Update RPM Repository
+name: Update RPM Repository from ro-Control
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     paths:
       - 'x86_64/**'
       - 'noarch/**'
-  workflow_dispatch: # Bu sayede botu siteden manuel de çalıştırabileceğiz
+  workflow_dispatch: # Botu siteden manuel çalıştırmak için
 
 jobs:
   rebuild-repo:
@@ -16,21 +16,46 @@ jobs:
       contents: write # Dosya yükleme yetkisi!
 
     steps:
-      - name: Checkout repository
+      # 1. Hedef depoyu (ro-repo) çalışma alanına alıyoruz
+      - name: Checkout ro-repo
         uses: actions/checkout@v4
 
+      # 2. Kaynak depoyu (ro-Control) geçici bir klasöre alıyoruz
+      - name: Checkout ro-Control
+        uses: actions/checkout@v4
+        with:
+          repository: Acik-Kaynak-Gelistirme-Toplulugu/ro-Control
+          path: temp-ro-Control
+          # ÖNEMLİ: Eğer ro-Control gizli (private) bir repoysa, buraya bir Personal Access Token (PAT) eklemelisin:
+          # token: ${{ secrets.GH_PAT }}
+
+      # 3. RPM paketlerini ro-Control'den çekip kendi dizinlerimize kopyalıyoruz
+      - name: Copy RPMs from ro-Control
+        run: |
+          mkdir -p x86_64 noarch
+          
+          # Dosyaları kopyala (ro-Control içindeki RPM yollarını kendi klasör yapına göre ayarlayabilirsin)
+          cp -a temp-ro-Control/x86_64/*.rpm x86_64/ 2>/dev/null || echo "x86_64 için yeni paket bulunamadı."
+          cp -a temp-ro-Control/noarch/*.rpm noarch/ 2>/dev/null || echo "noarch için yeni paket bulunamadı."
+          
+          # İşimiz bitince geçici klasörü siliyoruz ki ro-repo'ya commit edilmesin
+          rm -rf temp-ro-Control
+
+      # 4. Metadata oluşturucu aracı kuruyoruz
       - name: Install createrepo_c
         run: sudo apt-get update && sudo apt-get install -y createrepo-c
 
+      # 5. Metadata dosyalarını yeniliyoruz
       - name: Rebuild Metadata
         run: |
           createrepo_c x86_64/
           createrepo_c noarch/
 
+      # 6. Değişiklikleri kaydedip ro-repo'ya gönderiyoruz
       - name: Commit and Push changes
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git add .
-          git commit -m "Otomatik Güncelleme: Repo metadata oluşturuldu" || echo "Değişiklik yok"
+          git add x86_64/ noarch/
+          git commit -m "Otomatik Güncelleme: ro-Control'den yeni paketler çekildi ve metadata oluşturuldu" || echo "Değişiklik yok"
           git push
