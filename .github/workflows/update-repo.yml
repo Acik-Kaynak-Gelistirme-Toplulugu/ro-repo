@@ -32,7 +32,7 @@ jobs:
 
           # 3. Ro-Theme paketlerini indir
           echo "Ro-Theme paketleri indiriliyor..."
-          gh release download --repo Acik-Kaynak-Gelistirme-Toplulugu/Ro-Theme --pattern "*.rpm" --dir temp-downloads || echo "Ro-Theme için RPM bulunamadı."
+          gh release download --repo Project-Ro-ASD/Ro-Theme --pattern "*.rpm" --dir temp-downloads || echo "Ro-Theme için RPM bulunamadı."
           
           # İnen dosyaları tam uzantılarına göre doğru klasörlere dağıtıyoruz
           for file in temp-downloads/*.rpm; do
